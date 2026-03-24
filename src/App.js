@@ -1,89 +1,147 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  Anchor, Wind, Waves, Thermometer, Navigation, 
+  Plus, Activity, Moon, Sun, TrendingUp,
+  FileText, Ship, MapPin, Gauge
+} from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-<html lang="no">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EH 666 Kontrollpanel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #020617; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .neon-text { text-shadow: 0 0 10px rgba(34, 211, 238, 0.5); }
-    </style>
-</head>
-<body class="text-slate-100 p-8">
+export default function App() {
+  const [nightMode, setNightMode] = useState(true);
+  const [logs] = useState([
+    { id: 1, tid: '4t 12m', fangstTonn: 6.1, art: 'Torsk', dybde: '315m', fart: '4.1kn' },
+    { id: 2, tid: '3t 30m', fangstTonn: 4.2, art: 'Sei', dybde: '280m', fart: '3.9kn' },
+    { id: 3, tid: '4t 45m', fangstTonn: 5.8, art: 'Torsk', dybde: '310m', fart: '4.3kn' },
+  ]);
 
-    <div class="max-w-6xl mx-auto space-y-6">
-        <header class="glass p-6 rounded-[2rem] flex justify-between items-center shadow-2xl">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/40">
-                    <span class="text-2xl">⚓</span>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black italic tracking-tighter uppercase leading-none">EH 666 Control</h1>
-                    <span class="text-[10px] text-cyan-400 font-bold tracking-[0.3em]">LIVE // MS HAVØRN</span>
-                </div>
+  const theme = nightMode ? {
+    bg: 'bg-[#020617]',
+    panel: 'bg-[#0f172a]/80 border-slate-800',
+    text: 'text-slate-400',
+    header: 'text-white',
+    accent: 'text-cyan-400',
+    chartFill: '#0891b2',
+    grid: '#1e293b'
+  } : {
+    bg: 'bg-slate-50',
+    panel: 'bg-white border-slate-200',
+    text: 'text-slate-600',
+    header: 'text-slate-900',
+    accent: 'text-blue-600',
+    chartFill: '#2563eb',
+    grid: '#e2e8f0'
+  };
+
+  const chartData = useMemo(() => {
+    return [...logs].reverse().map((l, i) => ({ name: `Haul ${i+1}`, tonn: l.fangstTonn }));
+  }, [logs]);
+
+  return (
+    <div className={`min-h-screen ${theme.bg} ${theme.text} p-4 md:p-8 transition-colors duration-500 font-sans`}>
+      <div className="max-w-6xl mx-auto space-y-6">
+        
+        <header className={`${theme.panel} backdrop-blur-md p-6 rounded-[2rem] border flex justify-between items-center shadow-2xl`}>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+              <Ship size={24} />
             </div>
-            <div class="text-right">
-                <p class="text-xs text-slate-500 uppercase font-bold">Posisjon</p>
-                <p class="text-sm font-mono tracking-widest text-cyan-400">62.38° N, 5.60° Ø</p>
+            <div>
+              <h1 className={`text-2xl font-black italic tracking-tighter uppercase leading-none ${theme.header}`}>EH 666 PORTAL</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-60">MS HAVØRN // OPERASJONELL</span>
+              </div>
             </div>
+          </div>
+
+          <button onClick={() => setNightMode(!nightMode)} className={`p-3 rounded-2xl border transition-all ${theme.panel} hover:scale-110 shadow-lg`}>
+            {nightMode ? <Sun className="text-amber-400" size={20} /> : <Moon className="text-slate-600" size={20} />}
+          </button>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass p-6 rounded-3xl border-l-4 border-cyan-500">
-                <p class="text-xs font-bold text-slate-500 uppercase mb-2">Total Fangst i dag</p>
-                <p class="text-4xl font-black tracking-tighter">16.1 <span class="text-sm text-cyan-400">TONN</span></p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Vind NV', val: '14 m/s', icon: Wind, color: 'text-cyan-400' },
+            { label: 'Bølger Hs', val: '2.8m', icon: Waves, color: 'text-blue-400' },
+            { label: 'Sjøtemp', val: '6.2°C', icon: Thermometer, color: 'text-orange-400' },
+            { label: 'Trålfart', val: '4.1 kn', icon: Gauge, color: 'text-emerald-400' },
+          ].map((item, i) => (
+            <div key={i} className={`${theme.panel} p-5 rounded-3xl border flex items-center gap-4`}>
+              <item.icon size={24} className={item.color} />
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest opacity-40">{item.label}</p>
+                <p className={`text-lg font-bold ${theme.header}`}>{item.val}</p>
+              </div>
             </div>
-            <div class="glass p-6 rounded-3xl border-l-4 border-blue-500">
-                <p class="text-xs font-bold text-slate-500 uppercase mb-2">Vindstyrke v/ Runde</p>
-                <p class="text-4xl font-black tracking-tighter">12 <span class="text-sm text-blue-400">m/s NV</span></p>
-            </div>
-            <div class="glass p-6 rounded-3xl border-l-4 border-purple-500">
-                <p class="text-xs font-bold text-slate-500 uppercase mb-2">Bølgehøyde</p>
-                <p class="text-4xl font-black tracking-tighter">2.8 <span class="text-sm text-purple-400">m Hs</span></p>
-            </div>
+          ))}
         </div>
 
-        <div class="glass rounded-[2.5rem] overflow-hidden shadow-2xl">
-            <div class="p-8 border-b border-white/5 flex justify-between items-center">
-                <h2 class="text-xl font-bold uppercase tracking-tight">Aktivitetslogg</h2>
-                <button class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-xl font-bold transition-all shadow-lg shadow-cyan-500/20">
-                    + Ny registrering
-                </button>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className={`${theme.panel} lg:col-span-2 p-8 rounded-[2.5rem] border shadow-xl`}>
+            <h3 className={`text-xs font-bold uppercase tracking-[0.2em] mb-8 flex items-center gap-2 ${theme.header}`}>
+              <TrendingUp size={16} className={theme.accent} /> Fangsthistorikk
+            </h3>
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="colorTonn" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={theme.chartFill} stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor={theme.chartFill} stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme.grid} vertical={false} />
+                  <XAxis dataKey="name" stroke={nightMode ? "#475569" : "#94a3b8"} fontSize={10} hide />
+                  <YAxis hide />
+                  <Tooltip contentStyle={{ backgroundColor: nightMode ? '#0f172a' : '#fff', borderRadius: '16px', border: 'none' }} />
+                  <Area type="monotone" dataKey="tonn" stroke={theme.chartFill} fillOpacity={1} fill="url(#colorTonn)" strokeWidth={4} />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-white/5 text-[10px] uppercase tracking-widest text-slate-500">
-                        <th class="p-6">Tid i sjø</th>
-                        <th class="p-6">Fangst</th>
-                        <th class="p-6">Dybde</th>
-                        <th class="p-6">Fart</th>
-                        <th class="p-6">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-white/5">
-                    <tr class="hover:bg-cyan-500/5 transition-all">
-                        <td class="p-6 font-mono text-lg">4t 12m</td>
-                        <td class="p-6 font-black text-xl text-cyan-400">6.1t <span class="text-xs text-slate-500">Torsk</span></td>
-                        <td class="p-6 text-slate-400 font-mono">315m</td>
-                        <td class="p-6 text-slate-400 font-mono">4.1 kn</td>
-                        <td class="p-6"><span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">OK</span></td>
-                    </tr>
-                    <tr class="hover:bg-cyan-500/5 transition-all">
-                        <td class="p-6 font-mono text-lg">3t 30m</td>
-                        <td class="p-6 font-black text-xl text-cyan-400">4.2t <span class="text-xs text-slate-500">Sei</span></td>
-                        <td class="p-6 text-slate-400 font-mono">280m</td>
-                        <td class="p-6 text-slate-400 font-mono">3.9 kn</td>
-                        <td class="p-6"><span class="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full">VINSJ-VARSEL</span></td>
-                    </tr>
-                </tbody>
-            </table>
+          </div>
+
+          <div className={`${theme.panel} p-8 rounded-[2.5rem] border flex flex-col justify-center items-center text-center shadow-xl relative overflow-hidden`}>
+            <div className="relative z-10">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] opacity-40 mb-2">Total Fangst</p>
+              <p className={`text-7xl font-black italic tracking-tighter ${theme.header}`}>
+                16.1<span className="text-2xl ml-2 text-cyan-500 font-bold italic">T</span>
+              </p>
+            </div>
+            <Anchor className="absolute -right-8 -bottom-8 w-40 h-40 opacity-5 -rotate-12" />
+          </div>
         </div>
+
+        <div className={`${theme.panel} rounded-[2.5rem] border overflow-hidden shadow-2xl`}>
+          <div className="p-8 border-b border-inherit flex justify-between items-center">
+            <h2 className={`text-sm font-bold uppercase tracking-[0.2em] flex items-center gap-3 ${theme.header}`}>
+              <FileText size={18} className="text-cyan-500" /> Haul-Logg // EH 666
+            </h2>
+          </div>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-white/5 text-[10px] uppercase tracking-[0.2em] opacity-40 font-bold">
+                <th className="p-6">Tid</th>
+                <th className="p-6">Mengde</th>
+                <th className="p-6">Dybde</th>
+                <th className="p-6">Lokasjon</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-inherit font-medium">
+              {logs.map((log) => (
+                <tr key={log.id} className="hover:bg-cyan-500/5 transition-colors">
+                  <td className={`p-6 font-mono text-lg font-bold ${theme.header}`}>{log.tid}</td>
+                  <td className="p-6">
+                    <span className={`text-xl font-black italic ${theme.accent}`}>{log.fangstTonn}t</span>
+                    <span className="ml-2 text-[10px] opacity-40 uppercase">{log.art}</span>
+                  </td>
+                  <td className="p-6 font-mono opacity-60 italic">{log.dybde}</td>
+                  <td className="p-6 text-[10px] font-bold opacity-60 uppercase tracking-widest">Herøy / Runde</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-
-</body>
-</html>
   );
 }
