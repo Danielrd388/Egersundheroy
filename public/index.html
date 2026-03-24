@@ -38,4 +38,66 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="glass p-5 rounded-3xl border-l-4 border-l-cyan-500">
                 <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Vind</p>
-                <p class="text-xl font-bold text-white">1
+                <p class="text-xl font-bold text-white">12 m/s <span class="text-sm opacity-50 font-normal ml-2">NV</span></p>
+            </div>
+            <div class="glass p-5 rounded-3xl border-l-4 border-l-blue-500">
+                <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Bølgehøyde</p>
+                <p class="text-xl font-bold text-white">2.4m <span class="text-sm opacity-50 font-normal ml-2">Hs</span></p>
+            </div>
+            <div class="glass p-5 rounded-3xl border-l-4 border-l-orange-500">
+                <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Sjøtemperatur</p>
+                <p class="text-xl font-bold text-white">6.8°C</p>
+            </div>
+            <div class="glass p-5 rounded-3xl border-l-4 border-l-emerald-500">
+                <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Trålfart</p>
+                <p class="text-xl font-bold text-white">3.9 <span class="text-sm opacity-50 font-normal ml-2">kn</span></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="glass p-10 rounded-[2.5rem] flex flex-col justify-center items-center text-center shadow-xl">
+                <p class="text-xs font-bold uppercase tracking-[0.3em] opacity-40 mb-4">Dagens Totalfangst</p>
+                <div class="relative">
+                    <p class="text-8xl font-black italic tracking-tighter text-white">14.8</p>
+                    <p class="text-cyan-500 font-bold text-2xl absolute -right-8 bottom-4 italic uppercase">Tonn</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 glass rounded-[2.5rem] overflow-hidden">
+                <div class="p-8 border-b border-slate-800 flex justify-between items-center bg-white/5">
+                    <h2 class="text-sm font-bold uppercase tracking-[0.2em] text-white">Operasjons Logg // Siste 3 Haul</h2>
+                </div>
+                <div class="p-4 overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[10px] uppercase tracking-widest opacity-30 font-bold border-b border-slate-800">
+                                <th class="p-4">Tidspunkt</th>
+                                <th class="p-4">Art</th>
+                                <th class="p-4 text-right">Mengde</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm font-mono divide-y divide-slate-800">
+                            <tr><td class="p-4 text-white">12:45</td><td class="p-4">Torsk</td><td class="p-4 text-right text-cyan-400 font-bold">5.2 T</td></tr>
+                            <tr><td class="p-4 text-white">08:20</td><td class="p-4">Sei</td><td class="p-4 text-right text-cyan-400 font-bold">4.8 T</td></tr>
+                            <tr><td class="p-4 text-white">04:15</td><td class="p-4">Torsk</td><td class="p-4 text-right text-cyan-400 font-bold">4.8 T</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + 
+                         now.getMinutes().toString().padStart(2, '0') + ':' + 
+                         now.getSeconds().toString().padStart(2, '0');
+            const clockElement = document.getElementById('clock');
+            if (clockElement) clockElement.innerText = time;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
